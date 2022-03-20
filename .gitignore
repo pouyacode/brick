@@ -1,0 +1,12 @@
+# Builds
+bin/
+public_html/
+
+# Temp Files
+*~
+.*.swp
+.*.swo
+*.tmp
+*.bak
+*#
+.#*
