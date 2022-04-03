@@ -16,7 +16,7 @@
 
 const int width = 200;
 const int height = 400;
-const int unit = width/10;
+const int unit = width / 10;
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -35,46 +35,37 @@ SDL_Rect pixel_current;
 
 bool run = true;
 
-bool world[10][20] = {0};
-bool gun[3][2] = {{0, 1},
-		  {1, 1},
-		  {0, 1}};
+bool world[10][20] = { 0 };
+bool gun[3][2] = { { 0, 1 }, { 1, 1 }, { 0, 1 } };
 
-static int init(void){
-	if (SDL_Init(SDL_INIT_VIDEO|
-		     SDL_INIT_AUDIO|
-		     SDL_INIT_EVENTS|
+static int init(void)
+{
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_EVENTS |
 		     SDL_INIT_TIMER) != 0) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-			     "Couldn't initialize SDL: %s",
-			     SDL_GetError());
+			     "Couldn't initialize SDL: %s", SDL_GetError());
 		SDL_Quit();
 		return 1;
 	}
 
-	window = SDL_CreateWindow("Brick",
-				  SDL_WINDOWPOS_CENTERED,
-				  SDL_WINDOWPOS_CENTERED,
-				  width,
-				  height,
+	window = SDL_CreateWindow("Brick", SDL_WINDOWPOS_CENTERED,
+				  SDL_WINDOWPOS_CENTERED, width, height,
 				  SDL_WINDOW_ALLOW_HIGHDPI);
 
 	if (window == NULL) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-			     "Couldn't create window: %s",
-			     SDL_GetError());
+			     "Couldn't create window: %s", SDL_GetError());
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 	}
 
 	renderer = SDL_CreateRenderer(window, -1,
-				      SDL_RENDERER_ACCELERATED|
-				      SDL_RENDERER_PRESENTVSYNC);
+				      SDL_RENDERER_ACCELERATED |
+					      SDL_RENDERER_PRESENTVSYNC);
 
 	if (renderer == NULL) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-			     "Couldn't create renderer: %s",
-			     SDL_GetError());
+			     "Couldn't create renderer: %s", SDL_GetError());
 		SDL_DestroyRenderer(renderer);
 		SDL_DestroyWindow(window);
 		SDL_Quit();
@@ -82,7 +73,8 @@ static int init(void){
 	return 0;
 }
 
-static Uint32 color (bool state) {
+static Uint32 color(bool state)
+{
 	if (state) {
 		return SDL_MapRGB(surface->format, 191, 191, 191);
 	} else {
@@ -90,14 +82,16 @@ static Uint32 color (bool state) {
 	}
 }
 
-static void cleanup(void) {
+static void cleanup(void)
+{
 	SDL_DestroyTexture(texture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	/* SDL_Quit(); */
 }
 
-static void event_handler(void) {
+static void event_handler(void)
+{
 	SDL_PollEvent(&event);
 	switch (event.type) {
 	case SDL_QUIT:
@@ -116,20 +110,17 @@ static void event_handler(void) {
 	}
 }
 
-static void render(void) {
-	for (int i=0; i < 10; i++) {
-		for (int j=0; j < 20; j++) {
-			pixel_current.x = i*unit;
-			pixel_current.y = j*unit;
+static void render(void)
+{
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			pixel_current.x = i * unit;
+			pixel_current.y = j * unit;
 			if (world[i][j] == 1) {
-				SDL_RenderCopy(renderer,
-					       texture,
-					       &pixel_on,
+				SDL_RenderCopy(renderer, texture, &pixel_on,
 					       &pixel_current);
 			} else {
-				SDL_RenderCopy(renderer,
-					       texture,
-					       &pixel_off,
+				SDL_RenderCopy(renderer, texture, &pixel_off,
 					       &pixel_current);
 			}
 		}
@@ -140,15 +131,17 @@ static void render(void) {
 	event_handler();
 }
 
-static void blank_world(void) {
+static void blank_world(void)
+{
 	memset(world, 0, sizeof(world));
 }
 
-static void render_frame(void) {
+static void render_frame(void)
+{
 	blank_world();
-	for (int i=0; i < 20; i++) {
-		for (int j=0; j < 10; j++) {
-			if ((i&j)%2 == 0) {
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 10; j++) {
+			if ((i & j) % 2 == 0) {
 				world[j][i] = true;
 				render();
 			} else {
@@ -158,9 +151,9 @@ static void render_frame(void) {
 	}
 
 	blank_world();
-	for (int i=0; i < 20; i++) {
-		for (int j=0; j < 10; j++) {
-			if ((i^j)%2 == 0) {
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 10; j++) {
+			if ((i ^ j) % 2 == 0) {
 				world[j][i] = true;
 				render();
 			} else {
@@ -170,7 +163,8 @@ static void render_frame(void) {
 	}
 }
 
-int main (void) {
+int main(void)
+{
 	screen.w = width;
 	screen.h = height;
 
@@ -179,8 +173,7 @@ int main (void) {
 
 	if (init() != 0) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
-			     "Error while initializing: %s",
-			     SDL_GetError());
+			     "Error while initializing: %s", SDL_GetError());
 		return 1;
 	}
 
